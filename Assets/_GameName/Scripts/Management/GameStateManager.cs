@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 //A very quick and dirty implementation of a GameStateManager.
 //The job the GameStateManager is to mediate between different GameStates.
@@ -20,16 +21,18 @@ public class GameStateManager : MonoBehaviour
 
     public static void StartGame()
     {
-        //the hardcoded "3" should be replaced by an actual scene.
-        Instance.StartCoroutine(Instance.LoadScenesCoroutine((int)SceneLoader.DefaultScenes.MainMenu, 3));
+        SceneManager.LoadScene("GamePlay");
     }
 
     public static void GoToMainMenu()
     {
-        //the hardcoded "3" should be replaced by an actual scene.
-        Instance.StartCoroutine(Instance.LoadScenesCoroutine(3, (int)SceneLoader.DefaultScenes.MainMenu));
+        SceneManager.LoadScene("MainMenu");
     }
     
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
     private IEnumerator LoadScenesCoroutine(int oldScene, int newScene)
     {
         LoadingScreen.Show(this);

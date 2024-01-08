@@ -17,7 +17,7 @@ public class Inventory : MonoBehaviour
 
     private void OnDisable()
     {
-        
+        Cake.OnCakeCollected -= Add;
     }
 
     public void Add(ItemData itemData)

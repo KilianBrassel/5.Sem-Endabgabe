@@ -12,9 +12,9 @@ public class ScreenManager : MonoBehaviour
     [SerializeField] private LoadingScreen _loadingScreen;
     public LoadingScreen LoadingScreen => _loadingScreen;
 
-    [SerializeField] private InventoryUI _inventoryUI;
 
-    private InventoryUIController _inventoryUIController;
+
+
     
     private void Awake()
     {
@@ -22,17 +22,7 @@ public class ScreenManager : MonoBehaviour
         _loadingScreen.Initialize();
     }
 
-    public void RegisterPlayerInventory(Inventory inventory)
-    {
-        if (_inventoryUIController != null)
-            _inventoryUIController.Cleanup();
-        
-        _inventoryUIController = new InventoryUIController(inventory, _inventoryUI);
-    }
 
-    public void DeregisterPlayerInventory(Inventory inventory)
-    {
-        _inventoryUIController.Cleanup();
-        _inventoryUIController = null;
-    }
+
+
 }

@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface ICollectible
+namespace _GameName.Scripts.InventorySystem
 {
-    public void Collect();
+    public interface ICollectible
+    {
+        void Collect();
+    }
 }
