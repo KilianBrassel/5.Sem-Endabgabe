@@ -5,47 +5,50 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    public event Action<Item> OnItemAdded;
-    public event Action<Item> OnItemRemoved;
-    
-    private readonly List<Item> _items = new List<Item>();
-    public IReadOnlyList<Item> Items => _items;
+    public static event Action<List<InventoryItem>> OnInventoryChange;
 
-    private IEnumerator Start()
+    public List<InventoryItem> inventory = new List<InventoryItem>();
+    private Dictionary<ItemData, InventoryItem> itemDictionary = new Dictionary<ItemData, InventoryItem>();
+
+    private void OnEnable()
     {
-        while (ScreenManager.Instance == null)
-            yield return null;
-        ScreenManager.Instance.RegisterPlayerInventory(this);
+        Cake.OnCakeCollected += Add;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        if (ScreenManager.Instance == null)
-            return;
-        ScreenManager.Instance.DeregisterPlayerInventory(this);
-    }
-
-    public void AddItem(Item item)
-    {
-        if (_items.Contains(item))
-            return;
         
-        _items.Add(item);
-        
-        if(OnItemAdded != null)
-            OnItemAdded(item);
     }
 
-    public void RemoveItem(Item item)
+    public void Add(ItemData itemData)
     {
-        if (!_items.Contains(item))
-            return;
+        if(itemDictionary.TryGetValue(itemData, out InventoryItem item))
+        {
+            item.AddToStack();
+            OnInventoryChange?.Invoke(inventory);
+        }
 
-        _items.Remove(item);
+        else
+        {
+            InventoryItem newItem = new InventoryItem(itemData);
+            inventory.Add(newItem);
+            itemDictionary.Add(itemData, newItem);
+            OnInventoryChange?.Invoke(inventory);
 
-        if (OnItemRemoved != null)
-            OnItemRemoved(item);
+        }
     }
 
-    
+    public void Remove(ItemData itemData)
+    {
+        if (itemDictionary.TryGetValue(itemData, out InventoryItem item))
+        {
+            item.RemoveFromStack();
+            if(item.stackSize == 0)
+            {
+                inventory.Remove(item);
+                itemDictionary.Remove(itemData);
+            }
+            OnInventoryChange?.Invoke(inventory);
+        }
+    }
 }
